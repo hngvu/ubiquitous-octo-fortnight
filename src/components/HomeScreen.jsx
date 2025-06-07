@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Card, Col, Row, Button } from 'antd';
 import axios from 'axios';
-import { Link } from 'react-router';
-
-const { Meta } = Card;
+import ProductCard from './ProductCard';
 
 export default function HomeScreen() {
   const baseUrl = import.meta.env.VITE_API_URL;
@@ -26,30 +23,15 @@ export default function HomeScreen() {
   };
 
   return (
-    <div className="container py-4">
-      <Row gutter={[24, 24]}>
-        {api.map((item) => (
-          <Col xs={24} sm={12} md={8} key={item.id}>
-            <Card
-              hoverable
-              cover={
-                <img
-                  alt={item.orchidName}
-                  src={item.image}
-                  style={{ height: 350, objectFit: 'cover' }}
-                />
-              }
-              actions={[
-                <Link key="detail" to={`/detail/${item.id}`}>
-                  <Button type="primary">Detail</Button>
-                </Link>,
-              ]}
-            >
-              <Meta title={item.orchidName} />
-            </Card>
-          </Col>
-        ))}
-      </Row>
+    <div className=" max-h-screen overflow-y-auto p-4 bg-white shadow rounded-lg grid grid-cols-4 gap-4 my-8">
+      {api.map((item) => (
+        <ProductCard
+          key={item.id}
+          image={item.image}
+          name={item.orchidName}
+          price={item.price}
+        />
+      ))}
     </div>
   );
 }

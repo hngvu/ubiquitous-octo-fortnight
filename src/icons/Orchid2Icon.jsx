@@ -1,4 +1,5 @@
-export const OrchidIcon = (props) => (
+import * as React from "react";
+const Orchid2Icon = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -32,3 +33,4 @@ export const OrchidIcon = (props) => (
     </g>
   </svg>
 );
+export default Orchid2Icon;

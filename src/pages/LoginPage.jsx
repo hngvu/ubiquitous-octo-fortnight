@@ -1,14 +1,19 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 
 function LoginPage() {
 const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
     console.log('Username:', username);
     console.log('Password:', password);
+    if (username === 'admin' && password === 'admin') {
+      // Redirect to the dashboard or home page
+      navigate('/admin/products');
+    }
   };
 
 
@@ -19,7 +24,7 @@ const [username, setUsername] = useState('');
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg space-y-6">
         <div className="text-center">
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            Welcome back
+            Welcome back (admin/admin)
           </h2>
         </div>
 
