@@ -5,9 +5,14 @@ import {
   HomeIcon,
   OrchidIcon
 } from "../icons";
+import { authAtom } from "../store/authAtom";
+import { useAtom } from "jotai";
+import AccountMenu from "./AccountMenu";
 
 
 function NavBar() {
+  const [auth] = useAtom(authAtom);
+
   const navigationLinks = [
     {
       name: "Home",
@@ -69,7 +74,7 @@ function NavBar() {
             <CartIcon className="w-6 h-6 fill-current text-white" />
           </NavLink>
 
-          <NavLink
+          {auth ? (<AccountMenu/>) : (<NavLink
             to="/login"
             className={({ isActive }) =>
               `pb-1 px-4 rounded-full ${
@@ -80,7 +85,8 @@ function NavBar() {
             }
           >
             <span className="text-md fill-current">Login</span>
-          </NavLink>
+          </NavLink>)}
+          
         </div>
       </div>
     </div>

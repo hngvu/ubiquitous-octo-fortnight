@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { NavLink } from 'react-router';
 
 function RegisterPage() {
-  const [username, setUsername] = useState('');
+  const [email, setemail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = (e) => {
     e.preventDefault();
-    console.log('Username:', username);
+    console.log('email:', email);
     console.log('Password:', password);
     console.log('Confirm Password:', confirmPassword);
     if (password !== confirmPassword) {
@@ -30,19 +30,19 @@ function RegisterPage() {
 
         <form className="mt-8 space-y-6" onSubmit={handleRegister}>
           <div>
-            <label htmlFor="username" className="sr-only">
-              Username
+            <label htmlFor="email" className="sr-only">
+              email
             </label>
             <input
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               type="text"
-              autoComplete="username"
+              autoComplete="email"
               required
               className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
             />
           </div>
 

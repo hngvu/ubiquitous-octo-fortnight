@@ -1,25 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Input, Row, Switch, Image } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, Col, Form, Input, Row, Switch, Image, Typography, Divider } from 'antd';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import { useNavigate, useParams } from 'react-router';
+import { useAtom } from 'jotai';
+import { adminPageTitleAtom } from '../store/atoms';
+
+const { Title, Text } = Typography;
 
 export default function EditOrchid() {
   const baseUrl = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const navigate = useNavigate();
   const [api, setAPI] = useState({});
-  
+  const [adminPageTitle, setAdminPageTitle] = useAtom(adminPageTitleAtom);
+
   const { register, handleSubmit, formState: { errors }, control, setValue } = useForm();
 
   useEffect(() => {
     axios.get(`${baseUrl}/${id}`)
       .then((response) => {
-        setAPI(response.data);
-        setValue('orchidName', response.data.orchidName);
-        setValue('image', response.data.image);
-        setValue('isNatural', response.data.isNatural);
+        const data = response.data;
+        setAPI(data);
+        setValue('orchidName', data.orchidName);
+        setValue('image', data.image);
+        setValue('isNatural', data.isNatural);
+        setAdminPageTitle(data.orchidName);
+        console.log(data.orchidName);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -32,33 +40,33 @@ export default function EditOrchid() {
       headers: { 'Content-Type': 'application/json' }
     })
       .then(() => {
-        toast.success('Orchid edited successfully!');
+        toast.success('Orchid updated successfully!');
         setTimeout(() => {
-          navigate('/');
+          navigate('/admin/products');
         }, 2000);
       })
       .catch((error) => {
         console.error(error);
-        toast.error('Failed to edit orchid.');
+        toast.error('Failed to update orchid.');
       });
   };
 
   return (
-    <div className="container py-4">
+    <div className="max-w-6xl mx-auto px-4 py-8 bg-white rounded shadow-sm">
       <Toaster />
-      <Row gutter={[24, 24]}>
-        <Col span={16}>
-          <p className="lead text-primary">Edit the orchid: {api.orchidName}</p>
-          <hr />
+      <Divider />
+
+      <Row gutter={[32, 32]}>
+        <Col xs={24} md={16}>
           <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-            <Form.Item label="Name" required>
+            <Form.Item label="Orchid Name" required>
               <Controller
                 name="orchidName"
                 control={control}
-                rules={{ required: true }}
-                render={({ field }) => <Input {...field} />}
+                rules={{ required: "Name is required" }}
+                render={({ field }) => <Input {...field} placeholder="Enter orchid name" />}
               />
-              {errors.orchidName && <p className="text-warning">Name is required</p>}
+              {errors.orchidName && <Text type="warning">{errors.orchidName.message}</Text>}
             </Form.Item>
 
             <Form.Item label="Image URL" required>
@@ -66,47 +74,56 @@ export default function EditOrchid() {
                 name="image"
                 control={control}
                 rules={{
-                  required: true,
+                  required: "Image URL is required",
                   pattern: {
                     value: /(https?:\/\/[^\s]+)/i,
-                    message: "Image must be a valid URL"
+                    message: "Enter a valid image URL"
                   }
                 }}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => <Input {...field} placeholder="https://example.com/orchid.jpg" />}
               />
-              {errors.image && <p className="text-warning">{errors.image.message}</p>}
+              {errors.image && <Text type="warning">{errors.image.message}</Text>}
             </Form.Item>
 
-            <Form.Item label="Natural">
+            <Form.Item label="Is it natural?">
               <Controller
                 name="isNatural"
                 control={control}
                 render={({ field }) => (
                   <Switch
                     checked={field.value}
-                    onChange={(val) => field.onChange(val)}
+                    onChange={field.onChange}
                   />
                 )}
               />
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Save
-              </Button>
+              <div className="flex gap-3">
+                <Button type="primary" htmlType="submit">
+                  Save Changes
+                </Button>
+                <Button onClick={() => navigate(-1)} type="default">
+                  Cancel
+                </Button>
+              </div>
             </Form.Item>
           </Form>
         </Col>
 
-        <Col span={8}>
-          {api.image && (
-            <Image
-              src={api.image}
-              width={240}
-              className="shadow-lg p-3 mb-5 bg-body-tertiary rounded"
-              alt={api.orchidName}
-            />
-          )}
+        <Col xs={24} md={8}>
+          <div className="flex justify-center items-center h-full">
+            {api.image ? (
+              <Image
+                src={api.image}
+                alt={api.orchidName}
+                width={240}
+                className="rounded shadow"
+              />
+            ) : (
+              <Text type="secondary">No image available</Text>
+            )}
+          </div>
         </Col>
       </Row>
     </div>

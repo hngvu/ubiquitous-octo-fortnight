@@ -1,6 +1,12 @@
 export { HomeIcon } from "./HomeIcon";
 export { OrchidIcon } from "./OrchidIcon";
 export { AboutIcon } from "./AboutIcon";
-export { CartIcon } from "./CartIcon";
 export { SearchIcon } from "./SearchIcon";
 export { LogoIcon } from "./LogoIcon";
+export { CartIcon } from "./CartIcon";
+export { MinusIcon } from "./MinusIcon";
+export { PlusIcon } from "./PlusIcon";
+export { NextIcon } from "./NextIcon";
+export { PrevIcon } from "./PrevIcon";
+export { CrossIcon } from "./CrossIcon";
+export { UserIcon } from "./UserIcon";

@@ -3,12 +3,17 @@ import { Table, Button, Modal, Form, Input, Switch, Image, message, Badge, Space
 import axios from 'axios';
 import { Controller, useForm } from "react-hook-form";
 import { Link } from 'react-router';
+import { render } from 'react-dom';
+import { useAtom } from 'jotai';
+import { adminPageTitleAtom } from '../store/atoms';
+import { s } from 'framer-motion/client';
 
 export default function ListOfOrchids() {
   const baseUrl = import.meta.env.VITE_API_URL;
   const [api, setAPI] = useState([]);
   const [show, setShow] = useState(false);
   const { register, handleSubmit, formState: { errors }, control, reset } = useForm();
+  const [adminPageTitle, setAdminPageTitle] = useAtom(adminPageTitleAtom);
 
   useEffect(() => {
     fetchData();
@@ -19,6 +24,7 @@ export default function ListOfOrchids() {
       const response = await axios.get(baseUrl);
       const sortedData = response.data.sort((a, b) => parseInt(b.id) - parseInt(a.id));
       setAPI(sortedData);
+      setAdminPageTitle('All Products');
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -61,7 +67,14 @@ export default function ListOfOrchids() {
     {
       title: 'Orchid Name',
       dataIndex: 'orchidName',
-      key: 'orchidName'
+      key: 'orchidName',
+      render: (name, record) => <><Link to={`/admin/products/${record.id}`}><span className="font-normal ">{name}</span></Link></>
+    },
+    {
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'category',
+      render: (category) => <span className="text-secondary">{category}</span>
     },
     {
       title: 'Original',
@@ -72,29 +85,29 @@ export default function ListOfOrchids() {
           ? <Badge color="green" text="Natural" />
           : <Badge color="gold" text="Industry" />
     },
-    {
-      title: (
-        <Button type="primary" onClick={() => setShow(true)}>
-          + Add Orchid
-        </Button>
-      ),
-      key: 'actions',
-      render: (_, record) => (
-        <Space size="middle">
-          <Link to={`/edit/${record.id}`}>
-            <Button type="link">Edit</Button>
-          </Link>
-          <Button type="link" danger onClick={() => handleDelete(record.id)}>Delete</Button>
-        </Space>
-      )
-    }
+    // {
+    //   title: (
+    //     <Button type="primary" onClick={() => setShow(true)}>
+    //       + Add Orchid
+    //     </Button>
+    //   ),
+    //   key: 'actions',
+    //   render: (_, record) => (
+    //     <Space size="middle">
+    //       <Link to={`/admin/products/${record.id}`}>
+    //         <Button type="link">Edit</Button>
+    //       </Link>
+    //       <Button type="link" danger onClick={() => handleDelete(record.id)}>Delete</Button>
+    //     </Space>
+    //   )
+    // }
   ];
 
   return (
     <div className="container py-4">
       <Table dataSource={api} columns={columns} rowKey="id" pagination={{ pageSize: 8 }} />
 
-      <Modal
+      {/* <Modal
         title="New Orchid"
         open={show}
         onCancel={() => setShow(false)}
@@ -145,7 +158,7 @@ export default function ListOfOrchids() {
             </Space>
           </Form.Item>
         </Form>
-      </Modal>
+      </Modal> */}
     </div>
   );
 }

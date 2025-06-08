@@ -1,9 +1,6 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
+export const authAtom = atomWithStorage("auth", {id: null, role: null, token: null});
 export const userAtom = atom(null);
 
-export const isAuthenticatedAtom = atom(
-    (get) => get(userAtom) !== null,
-)
-
-export const authLoadingAtom = atom(true);

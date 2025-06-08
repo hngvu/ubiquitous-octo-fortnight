@@ -1,20 +1,36 @@
 import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router';
+import { Navigate, NavLink, useNavigate } from 'react-router';
+import { useAuth } from '../hooks/useAuth';
 
 function LoginPage() {
-const [username, setUsername] = useState('');
+const [email, setemail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const {auth, login} = useAuth();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log('Username:', username);
+    console.log('email:', email);
     console.log('Password:', password);
-    if (username === 'admin' && password === 'admin') {
-      // Redirect to the dashboard or home page
+    if (email === 'admin' && password === 'admin') {
+      login({role: 'admin'})
       navigate('/admin/products');
     }
+
+    if (email === 'king' && password === 'king') {
+      login({role: 'king'})
+      navigate('/');
+    }
   };
+
+  if (auth) {
+    if (auth.role === 'admin') {
+      return <Navigate to="/admin/products" replace />;
+    }
+    if (auth.role === 'king') {
+      return <Navigate to="/" replace />;
+    }
+  }
 
 
   return (
@@ -29,21 +45,21 @@ const [username, setUsername] = useState('');
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          {/* Username Input */}
+          {/* email Input */}
           <div>
-            <label htmlFor="username" className="sr-only">
-              Username
+            <label htmlFor="email" className="sr-only">
+              email
             </label>
             <input
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               type="text"
-              autoComplete="username"
+              autoComplete="email"
               required
               className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
             />
           </div>
 

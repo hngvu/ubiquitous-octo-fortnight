@@ -1,27 +1,19 @@
-// src/components/ProtectedRoute.jsx
-import { Navigate, Outlet, useLocation } from 'react-router';
-import { useAtom } from 'jotai';
-import { isAuthenticatedAtom, userAtom, authLoadingAtom } from '../store/authAtom';
+import { useAtom } from "jotai";
+import { Navigate } from "react-router";
+import { authAtom } from "../store/authAtom";
+import NoPermissionPage from "../pages/NoPermissionPage";
 
-function ProtectedRoute({ allowedRoles: [] }) {
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [user] = useAtom(userAtom);
-  const [authLoading] = useAtom(authLoadingAtom);
-  const location = useLocation();
+export default function ProtectedRoute({ allowedRoles = [], children }) {
+  const [auth] = useAtom(authAtom);
 
-  if (authLoading) {
-    return <div>Loading authentication...</div>;
+  if (!auth) {
+    return <Navigate to="/login" replace />;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+
+  if (!allowedRoles.includes(auth.role)) {
+    return <NoPermissionPage />;
   }
 
-  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />; 
-  }
-
-  return <Outlet />;
+  return children;
 }
-
-export default ProtectedRoute;

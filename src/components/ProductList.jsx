@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from './ProductCard';
 
-export default function HomeScreen() {
+export default function ProductList() {
   const baseUrl = import.meta.env.VITE_API_URL;
   const [api, setAPI] = useState([]);
 
@@ -23,10 +23,11 @@ export default function HomeScreen() {
   };
 
   return (
-    <div className=" max-h-screen overflow-y-auto p-4 bg-white shadow rounded-lg grid grid-cols-4 gap-4 my-8">
+    <div className="p-4 bg-white shadow rounded-lg grid grid-cols-3 gap-4 my-8">
       {api.map((item) => (
         <ProductCard
           key={item.id}
+          id={item.id}
           image={item.image}
           name={item.orchidName}
           price={item.price}
